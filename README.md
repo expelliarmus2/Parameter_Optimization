@@ -11,7 +11,7 @@
 # 粒子数算法
 ## 原始的粒子数算法
 PSO算法的核心是利用鸟类再谷场寻找食物的思想，设想这样一个场景：一群鸟在谷场随机搜索食物，但是这个区域只有一堆谷物，所有的鸟都不知道食物在哪里，但是知道他们离它有多远。一个最简单有效的策略十搜索离谷物最近的鸟的附近区域。在实际问题中每一个临时的解都是一只鸟，称之为“粒子”，所有粒子都有一个由被优化函数决定的适应值(fitness value),每个粒子还有速度决定飞行的方向和距离。然后在空间随机搜索。
-速度v(i+1)=weight*v(i)+c1*rand()*(Gbest1-theta[i])+c2*rand()*(Gbest2-theta[i])+c3*rand()*(Pbest-theta[i]).其中Gbest1，Gbest2是全局最优和次全局最优，Pbest是当前循环的最优，也可以只保留全局最优。theta[i+1]=theta[i]+v。
+速度v(i+1)=weight*v(i)+c1*rand()*(Gbest1-theta[i])+c2*rand()*(Gbest2-theta[i])+c3*rand()*(Pbest-theta[i]).其中Gbest1，Gbest2是全局最优和次全局最优，Pbest是当前循环的最优，也可以只保留全局最优。theta[i+1]=theta[i]+v。更多的信息可以参照：https://www.cnblogs.com/qw-blog/p/10338477.html 里面有更加相信的讲解。
 ### 说明
 * 一般weight取值0.8全局搜索能力强，取值0.4局部搜索较强。
 * c1,c3之和3到5，c1=1.4，c3=1.4是一个典型的取值。
