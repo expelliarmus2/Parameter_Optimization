@@ -10,9 +10,9 @@ from projectq.cengines import (MainEngine,
                                DecompositionRuleSet)
 import projectq.setups.decompositions
 import numpy as np
-'''from hiq.projectq.backends import SimulatorMPI
+from hiq.projectq.backends import SimulatorMPI
 from hiq.projectq.cengines import GreedyScheduler, HiQMainEngine
-from mpi4py import MPI'''
+from mpi4py import MPI
 import time
 
 
@@ -3548,7 +3548,7 @@ def calculate_theta(eng, final_state):
         max_pro_p=max(pro)
         location=pro.index(max_pro_p)#当前最优的位置
         #储存当前最优的结果的theta，以及结果大于0.01的theta，目的十为了进行下一步的学习。
-        if max_pro_p>=max_pro_g[-1] or max_pro_p>0.01:
+        if max_pro_p>=max_pro_g[-1] or max_pro_p>0.002:
             theta_g.append(theta[location])
             max_pro_g.append(max_pro_p)
         print(max_pro_g[-1],max_pro_p,theta_g[-1])
@@ -3619,9 +3619,9 @@ if __name__ == "__main__":
       for i in range(30):
         start_time=time.time()
         # use projectq simulator
-        # eng = MainEngine()
+        eng = MainEngine()
         # use hiq simulator3549
-        backend = SimulatorMPI(gate_fusion=True)
+        '''backend = SimulatorMPI(gate_fusion=True)
         cache_depth = 10
         rule_set = DecompositionRuleSet(modules=[projectq.setups.decompositions])
         engines = [TagRemover(), LocalOptimizer(cache_depth)
@@ -3631,7 +3631,7 @@ if __name__ == "__main__":
                    , GreedyScheduler()
                    ]
         # make the compiler and run the circuit on the simulator backend
-        eng = HiQMainEngine(backend, engines)
+        eng = HiQMainEngine(backend, engines)'''
         # Just an example, you need to design more final state cases for testing..
         final_state = [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1]
         # Function that need to be implemented by the contestants

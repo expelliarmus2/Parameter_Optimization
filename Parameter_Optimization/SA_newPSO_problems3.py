@@ -3544,7 +3544,7 @@ def calculate_theta(eng, final_state):
             theta_i = list(0.1 * np.random.random(5))
             theta = [x+y for x,y in zip(thetaLast,theta_i)]
             pro = run(eng, theta, final_state)
-            if pro >= pro_max or pro>0.01:
+            if pro >= pro_max or pro>0.002:
                 pro_max.append(pro)
                 theta_max.append(theta)
                 print(pro_max[-1], theta_max[-1])
@@ -3607,10 +3607,10 @@ if __name__ == "__main__":
     for k in range(50):
         print("\n\nThe %d time:"%k)
         # use projectq simulator
-        #eng = MainEngine()
+        eng = MainEngine()
         # use hiq simulator
 
-        backend = SimulatorMPI(gate_fusion=True)
+        '''backend = SimulatorMPI(gate_fusion=True)
         cache_depth = 10
         rule_set = DecompositionRuleSet(modules=[projectq.setups.decompositions])
         engines = [TagRemover(), LocalOptimizer(cache_depth)
@@ -3620,7 +3620,7 @@ if __name__ == "__main__":
                    , GreedyScheduler()
                    ]
         # make the compiler and run the circuit on the simulator backend
-        eng = HiQMainEngine(backend, engines)
+        eng = HiQMainEngine(backend, engines)'''
 
         final_state = [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1]
 

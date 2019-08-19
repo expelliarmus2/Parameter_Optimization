@@ -3584,10 +3584,10 @@ def calculate_theta(eng, final_state):
 
 if __name__ == "__main__":
     # use projectq simulator
-    # eng = MainEngine()
+    eng = MainEngine()
     # use hiq simulator3549
 
-    backend = SimulatorMPI(gate_fusion=True)
+    '''backend = SimulatorMPI(gate_fusion=True)
     cache_depth = 10
     rule_set = DecompositionRuleSet(modules=[projectq.setups.decompositions])
     engines = [TagRemover(), LocalOptimizer(cache_depth)
@@ -3597,7 +3597,7 @@ if __name__ == "__main__":
                , GreedyScheduler()
                ]
     # make the compiler and run the circuit on the simulator backend
-    eng = HiQMainEngine(backend, engines)
+    eng = HiQMainEngine(backend, engines)'''
     start_time=time.time()
 
     # Just an example, you need to design more final state cases for testing..

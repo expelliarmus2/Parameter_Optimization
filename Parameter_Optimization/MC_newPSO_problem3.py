@@ -3629,10 +3629,10 @@ def calculate_theta(eng, final_state):
 if __name__ == "__main__":
     for k in range(50):
         # use projectq simulator
-        #eng = MainEngine()
+        eng = MainEngine()
         # use hiq simulator
 
-        backend = SimulatorMPI(gate_fusion=True)
+        '''backend = SimulatorMPI(gate_fusion=True)
         cache_depth = 10
         rule_set = DecompositionRuleSet(modules=[projectq.setups.decompositions])
         engines = [TagRemover(), LocalOptimizer(cache_depth)
@@ -3642,7 +3642,7 @@ if __name__ == "__main__":
                    , GreedyScheduler()
                    ]
         # make the compiler and run the circuit on the simulator backend
-        eng = HiQMainEngine(backend, engines)
+        eng = HiQMainEngine(backend, engines)'''
 
         final_state = [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1]
 
