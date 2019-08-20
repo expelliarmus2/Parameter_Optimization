@@ -3525,7 +3525,7 @@ def run(eng, theta, final_state):
 
 def calculate_theta(eng, final_state):
     #采用模拟退货算法。
-    num = 5
+    num = 30
     T_max = 100
     T_min = 0.001
     Trate = 0.95
@@ -3544,7 +3544,7 @@ def calculate_theta(eng, final_state):
             theta_i = list(0.1 * np.random.random(5))
             theta = [x+y for x,y in zip(thetaLast,theta_i)]
             pro = run(eng, theta, final_state)
-            if pro >= pro_max or pro>0.002:
+            if pro >= pro_max[-1] or pro>0.002:
                 pro_max.append(pro)
                 theta_max.append(theta)
                 print(pro_max[-1], theta_max[-1])
@@ -3587,7 +3587,7 @@ def calculate_theta(eng, final_state):
     pro=[0]*n
 
     times = 40
-    p_min=0.5
+    p_min=0.7
     p_max=0.95
     for k in range(times):
         for j in range(len(theta)):
@@ -3600,11 +3600,12 @@ def calculate_theta(eng, final_state):
             theta[j] = [p * x + (1 - p) * y for x, y in zip(theta[j], theta[location])]
         if max_pro >= 0.018:
             break
+    print(len(theta))
     return theta[location]
 
 
 if __name__ == "__main__":
-    for k in range(50):
+    for k in range(1):
         print("\n\nThe %d time:"%k)
         # use projectq simulator
         eng = MainEngine()
