@@ -3525,10 +3525,10 @@ def run(eng, theta, final_state):
 
 def calculate_theta(eng, final_state):
     #采用模拟退货算法。
-    num = 30
-    T_max = 100
-    T_min = 0.001
-    Trate = 0.95
+    num = 50
+    T_max = 1
+    T_min = 0.00001
+    Trate = 0.93
     theta = 2 * np.pi * np.random.random(5)
     theta = theta.tolist()
     # 储存上一次的结果，以及最好的结果。
@@ -3541,10 +3541,11 @@ def calculate_theta(eng, final_state):
     while (T_max>T_min):
         n=0
         while n<num:
-            theta_i = list(0.1 * np.random.random(5))
+            theta_i = 0.6 * np.random.random(5)-0.3
+            theta_i = theta_i.tolist()
             theta = [x+y for x,y in zip(thetaLast,theta_i)]
             pro = run(eng, theta, final_state)
-            if pro >= pro_max[-1] or pro>0.002:
+            if pro >= pro_max[-1] or pro>0.007:
                 pro_max.append(pro)
                 theta_max.append(theta)
                 print(pro_max[-1], theta_max[-1])
@@ -3558,6 +3559,8 @@ def calculate_theta(eng, final_state):
                 if np.random.random() < p:
                     thetaLast = theta
                     proLast = pro
+            '''if pro_max[-1]>0.018:
+                break'''
             n=n+1
         T_max = T_max * Trate
 
@@ -3586,7 +3589,7 @@ def calculate_theta(eng, final_state):
     n=len(theta)
     pro=[0]*n
 
-    times = 40
+    times = 20
     p_min=0.7
     p_max=0.95
     for k in range(times):
@@ -3598,14 +3601,14 @@ def calculate_theta(eng, final_state):
         for j in range(n):
             p = p_min + (p_max- p_min) * np.log10(k + 1) / np.log10(times)
             theta[j] = [p * x + (1 - p) * y for x, y in zip(theta[j], theta[location])]
-        if max_pro >= 0.018:
-            break
+        '''if max_pro >= 0.018:
+            break'''
     print(len(theta))
     return theta[location]
 
 
 if __name__ == "__main__":
-    for k in range(1):
+    for k in range(6):
         print("\n\nThe %d time:"%k)
         # use projectq simulator
         eng = MainEngine()
@@ -3669,4 +3672,6 @@ The Second way with p=0.95:
 
 
 0.02352908672167448 9 [4.723114444326273, 5.456658879752021, 1.5720429519954697, 5.032961079239871, 5.268343451365208]
-0.023529086721674454'''
+0.023529086721674454
+
+[1.5723,4.0052,4.7063,1.5185,14.0457] 0.0225'''

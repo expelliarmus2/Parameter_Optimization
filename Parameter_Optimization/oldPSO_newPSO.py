@@ -3512,65 +3512,76 @@ def run_circuit(qureg, theta):
     Rx(theta[2]) | qureg[4]
     H | qureg[1]
 
-def run(eng,theta,final_state):
-    qureg=eng.allocate_qureg(14)
-    run_circuit(qureg,theta)
+
+def run(eng, theta, final_state):
+    qureg = eng.allocate_qureg(14)
+    run_circuit(qureg, theta)
     eng.flush()
     pro = eng.backend.get_probability(final_state, qureg)
     All(Measure) | qureg
     return pro
 
+
 def calculate_theta(eng, final_state):
-    m=30
-    time=100
-    theta = 2*np.pi*np.random.random((m,5))
-    theta=theta.tolist()
-    #g存放全局最优解。
-    theta_g=2*np.pi*np.random.random((2,5))
-    theta_g=theta_g.tolist()
-    max_pro_g=[]
-    max_pro_g.append(run(eng,theta_g[0],final_state))
+    m = 30
+    time = 100
+    theta = 2 * np.pi * np.random.random((m, 5))
+    theta = theta.tolist()
+    # g存放全局最优解。
+    theta_g = 2 * np.pi * np.random.random((2, 5))
+    theta_g = theta_g.tolist()
+    max_pro_g = []
+    max_pro_g.append(run(eng, theta_g[0], final_state))
     max_pro_g.append(run(eng, theta_g[1], final_state))
-    #下面十更新速度以及一些参数。
-    max_pro_p=0
-    v=[0]*5
-    c1=1.4
-    c2=1.4
-    c3=1
-    v_max=1
-    weight=0.8
-    location=0
-    pro=[0]*m
-    #0.005452703005976826 0.0007955449538926794 20 [ 2.9706074   3.45605731  3.40125491  3.39205966 -0.05104171]
+    theta_g1 = [x for x in theta_g]
+    max_pro_g1 = [x for x in max_pro_g]
+    # 下面十更新速度以及一些参数。
+    max_pro_p = 0
+    v = [0] * 5
+    c1 = 1.6
+    c2 = 1.6
+    c3 = 1
+    v_max = 1
+    weight = 0.8
+    location = 0
+    pro = [0] * m
+    # 0.005452703005976826 0.0007955449538926794 20 [ 2.9706074   3.45605731  3.40125491  3.39205966 -0.05104171]
     for i in range(time):
         for j in range(m):
-            pro[j]=run(eng,theta[j],final_state)
-        max_pro_p=max(pro)
-        location=pro.index(max_pro_p)#当前最优的位置
-        #储存当前最优的结果的theta，以及结果大于0.01的theta，目的十为了进行下一步的学习。
-        if max_pro_p>=max_pro_g[-1] or max_pro_p>0.002:
+            pro[j] = run(eng, theta[j], final_state)
+        max_pro_p = max(pro)
+        location = pro.index(max_pro_p)  # 当前最优的位置
+        # 储存当前最优的结果的theta，以及结果大于0.01的theta，目的十为了进行下一步的学习。
+        if max_pro_p >= max_pro_g[-1]:
             theta_g.append(theta[location])
             max_pro_g.append(max_pro_p)
-        print(max_pro_g[-1],max_pro_p,theta_g[-1])
-        #如果结果满足停止条件就停止。
-        if max_pro_p>0.18:
+            theta_g1.append(theta[location])
+            max_pro_g1.append(max_pro_p)
+        elif max_pro_p > 0.001:
+            theta_g1.append(theta[location])
+            max_pro_g1.append(max_pro_p)
+        print(max_pro_g[-1], max_pro_p, theta[location])
+        # 如果结果满足停止条件就停止。
+        if max_pro_p > 0.18:
             break
-        #原始的PSO算法更新的公式。
+        # 原始的PSO算法更新的公式。
         for j in range(m):
-            v=[weight*x+c1*np.random.random()*(y-z)+c2*np.random.random()*(k-z)+c3*np.random.random()*(l-z) for x,y,z,k,l in zip(v,theta[location],theta[j],theta_g[-1],theta[-2])]
+            v = [weight * x + c1 * np.random.random() * (y - k) + c2 * np.random.random() * (
+                        z - k) + c3 * np.random.random() * (l - k) for x, y, z, k, l in
+                 zip(v, theta_g[-1], theta[location], theta[j], theta_g[-2])]
             for k in range(5):
-                if v[k]>=v_max:
-                    v[k]=v_max
-                if v[k]<=-v_max:
-                    v[k]=-v_max
-            theta[j]=[x+y for x,y in zip(theta[j],v)]
+                if v[k] >= v_max:
+                    v[k] = v_max
+                if v[k] <= -v_max:
+                    v[k] = -v_max
+            theta[j] = [x + y for x, y in zip(theta[j], v)]
 
-    #利用PSO的数据进行下一步PSO，改进的PSO算法。搜索全局最优更强。
-    if len(theta_g)>10:
-        theta=theta_g[-10:]
+    # 利用PSO的数据进行下一步PSO，改进的PSO算法。搜索全局最优更强。
+    if len(theta_g1) > 20:
+        theta = theta_g1[-20:]
     else:
-        theta=theta_g
-    #在第一次训练中好的结果，以及所有的边界值。
+        theta = theta_g1
+    # 在第一次训练中好的结果，以及所有的边界值。
     theta.append([0, 0, 0, 0, 0])
     theta.append([2 * np.pi, 2 * np.pi, 2 * np.pi, 2 * np.pi, 2 * np.pi])
     for i in range(5):
@@ -3596,8 +3607,8 @@ def calculate_theta(eng, final_state):
     print("The Second step newPSO:", '\n\n')
 
     # 运行步进随着迭代次数的增加而减小，与AdaGrad相同的原理。
-    times = 40
-    p_min = 0.5
+    times = 50
+    p_min = 0.7
     p_max = 0.95
     p = p_min
     for k in range(times):
@@ -3606,7 +3617,7 @@ def calculate_theta(eng, final_state):
         max_pro = max(pro)
         location = pro.index(max_pro)
         print(max_pro, location, p, theta[location])
-        #迭代。
+        # 迭代。
         for j in range(n):
             p = p_min + (p_max - p_min) * np.log10(k + 1) / np.log10(times)
             theta[j] = [p * x + (1 - p) * y for x, y in zip(theta[j], theta[location])]
@@ -3616,8 +3627,8 @@ def calculate_theta(eng, final_state):
 
 
 if __name__ == "__main__":
-      for i in range(30):
-        start_time=time.time()
+    for i in range(30):
+        start_time = time.time()
         # use projectq simulator
         eng = MainEngine()
         # use hiq simulator3549
@@ -3642,5 +3653,5 @@ if __name__ == "__main__":
         eng.flush()
         print(eng.backend.get_probability(final_state, qureg))
         All(Measure) | qureg
-        end_time=time.time()
-        print(end_time-start_time)
+        end_time = time.time()
+        print(end_time - start_time)
