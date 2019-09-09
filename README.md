@@ -19,7 +19,8 @@ PSO算法的核心是利用鸟类再谷场寻找食物的思想，设想这样�
 * 粒子数一般20-30，可以迭代很多次，知道收敛。
 
 ## 改进后的粒子数算法
-它的思想与PSO算法类似，只是我们的迭代公式不同。保证最优解不动，其余的解向最优解靠近，但是这种算法的全局搜索能力不如PSO。更新公式为<a href="https://www.codecogs.com/eqnedit.php?latex=theta_i=p*theta_i&plus;(1-p)*theta\_g_i" target="_blank"><img src="https://latex.codecogs.com/gif.latex?theta_i=p*theta_i&plus;(1-p)*theta\_g_i" title="theta_i=p*theta_i+(1-p)*theta\_g_i" /></a>
+它的思想与PSO算法类似，只是我们的迭代公式不同。保证最优解不动，其余的解向最优解靠近，但是这种算法的全局搜索能力不如PSO。更新公式为
+<a href="https://www.codecogs.com/eqnedit.php?latex=theta_i=p*theta_i&plus;(1-p)*theta\_g_i" target="_blank"><img src="https://latex.codecogs.com/gif.latex?theta_i=p*theta_i&plus;(1-p)*theta\_g_i" title="theta_i=p*theta_i+(1-p)*theta\_g_i" /></a>
 其中p是概率可以按照p = p_min + (p_max - p_min) * np.log10(k + 1) / np.log10(times)更新。使得最开始向最优解前进快，逐渐变慢，避免漏掉最优解。选取log10函数是为了步长小的时候迭代次数更多。这一种方法类似捕鱼收网，后面我叫这种方法为捕鱼算法。
 
 # 模拟退火算法
