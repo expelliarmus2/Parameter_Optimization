@@ -10,7 +10,7 @@
 
 # 粒子数算法
 ## 原始的粒子数算法
-PSO算法的核心是利用鸟类再谷场寻找食物的思想，设想这样一个场景：一群鸟在谷场随机搜索食物，但是这个区域只有一堆谷物，所有的鸟都不知道食物在哪里，但是知道他们离它有多远。一个最简单有效的策略十搜索离谷物最近的鸟的附近区域。在实际问题中每一个临时的解都是一只鸟，称之为“粒子”，所有粒子都有一个由被优化函数决定的适应值(fitness value),每个粒子还有速度决定飞行的方向和距离。然后在空间随机搜索。
+PSO算法的核心是利用鸟类再谷场寻找食物的思想，设想这样一个场景：一群鸟在谷场随机搜索食物，但是这个区域只有一堆谷物，所有的鸟都不知道食物在哪里，但是知道他们离它有多远。一个最简单有效的策略十搜索离谷物最近的鸟的附近区域。在实际问题中每一个临时的解都是一只鸟，称之为“粒子”，所有粒子都有一个由被优化函数决定的适应值(fitness value),每个粒子还有速度决定飞行的方向和距离。然后在空间随机搜索。<img src="https://latex.codecogs.com/gif.latex?theta_i=p*theta_i&plus;(1-p)*theta\_g_i" title="theta_i=p*theta_i+(1-p)*theta\_g_i" />
 速度v(i+1)=weight*v(i)+c1*rand()*(Gbest1-theta[i])+c2*rand()*(Gbest2-theta[i])+c3*rand()*(Pbest-theta[i]).其中Gbest1，Gbest2是全局最优和次全局最优，Pbest是当前循环的最优，也可以只保留全局最优。theta[i+1]=theta[i]+v。更多的信息可以参照：https://www.cnblogs.com/qw-blog/p/10338477.html 里面有更加相信的讲解。
 ### 说明
 * 一般weight取值0.8全局搜索能力强，取值0.4局部搜索较强。
@@ -19,8 +19,8 @@ PSO算法的核心是利用鸟类再谷场寻找食物的思想，设想这样�
 * 粒子数一般20-30，可以迭代很多次，知道收敛。
 
 ## 改进后的粒子数算法
-它的思想与PSO算法类似，只是我们的迭代公式不同。保证最优解不动，其余的解向最优解靠近，但是这种算法的全局搜索能力不如PSO。更新公式为
-<a href="https://www.codecogs.com/eqnedit.php?latex=theta_i=p*theta_i&plus;(1-p)*theta\_g_i" target="_blank"><img src="https://latex.codecogs.com/gif.latex?theta_i=p*theta_i&plus;(1-p)*theta\_g_i" title="theta_i=p*theta_i+(1-p)*theta\_g_i" /></a>
+它的思想与PSO算法类似，只是我们的迭代公式不同。保证最优解不动，其余的解向最优解靠近，但是这种算法的全局搜索能力不如PSO。更新公式为theta[i+1]=p*theta[i]+(1-p)*theta_g[i]
+<img src="https://latex.codecogs.com/gif.latex?theta_i=p*theta_i&plus;(1-p)*theta\_g_i" title="theta_i=p*theta_i+(1-p)*theta\_g_i" />
 其中p是概率可以按照p = p_min + (p_max - p_min) * np.log10(k + 1) / np.log10(times)更新。使得最开始向最优解前进快，逐渐变慢，避免漏掉最优解。选取log10函数是为了步长小的时候迭代次数更多。这一种方法类似捕鱼收网，后面我叫这种方法为捕鱼算法。
 
 # 模拟退火算法
