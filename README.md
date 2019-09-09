@@ -10,8 +10,11 @@
 
 # 粒子数算法
 ## 原始的粒子数算法
-PSO算法的核心是利用鸟类再谷场寻找食物的思想，设想这样一个场景：一群鸟在谷场随机搜索食物，但是这个区域只有一堆谷物，所有的鸟都不知道食物在哪里，但是知道他们离它有多远。一个最简单有效的策略十搜索离谷物最近的鸟的附近区域。在实际问题中每一个临时的解都是一只鸟，称之为“粒子”，所有粒子都有一个由被优化函数决定的适应值(fitness value),每个粒子还有速度决定飞行的方向和距离。然后在空间随机搜索。<img src="https://latex.codecogs.com/gif.latex?theta_i=p*theta_i&plus;(1-p)*theta\_g_i" title="theta_i=p*theta_i+(1-p)*theta\_g_i" />
-速度v(i+1)=weight*v(i)+c1*rand()*(Gbest1-theta[i])+c2*rand()*(Gbest2-theta[i])+c3*rand()*(Pbest-theta[i]).其中Gbest1，Gbest2是全局最优和次全局最优，Pbest是当前循环的最优，也可以只保留全局最优。theta[i+1]=theta[i]+v。更多的信息可以参照：https://www.cnblogs.com/qw-blog/p/10338477.html 里面有更加相信的讲解。
+PSO算法的核心是利用鸟类再谷场寻找食物的思想，设想这样一个场景：一群鸟在谷场随机搜索食物，但是这个区域只有一堆谷物，所有的鸟都不知道食物在哪里，但是知道他们离它有多远。一个最简单有效的策略十搜索离谷物最近的鸟的附近区域。在实际问题中每一个临时的解都是一只鸟，称之为“粒子”，所有粒子都有一个由被优化函数决定的适应值(fitness value),每个粒子还有速度决定飞行的方向和距离。然后在空间随机搜索。速度
+<img src="https://latex.codecogs.com/gif.latex?v_{i&plus;1}=w*v_i&plus;c1*rand()*(Gbest1-theta_i)&plus;c2*rand()*(Gbest2-theta_i)&plus;c3*rand()*(Pbest-theta_i)" title="v_{i+1}=w*v_i+c1*rand()*(Gbest1-theta_i)+c2*rand()*(Gbest2-theta_i)+c3*rand()*(Pbest-theta_i)" />
+其中Gbest1，Gbest2是全局最优和次全局最优，Pbest是当前循环的最优，也可以只保留全局最优。
+<img src="https://latex.codecogs.com/gif.latex?theta_{i&plus;1}=theta_i&plus;v" title="theta_{i+1}=theta_i+v" />
+更多的信息可以参照：https://www.cnblogs.com/qw-blog/p/10338477.html 里面有更加相信的讲解。
 ### 说明
 * 一般weight取值0.8全局搜索能力强，取值0.4局部搜索较强。
 * c1,c3之和3到5，c1=1.4，c3=1.4是一个典型的取值。
@@ -19,12 +22,15 @@ PSO算法的核心是利用鸟类再谷场寻找食物的思想，设想这样�
 * 粒子数一般20-30，可以迭代很多次，知道收敛。
 
 ## 改进后的粒子数算法
-它的思想与PSO算法类似，只是我们的迭代公式不同。保证最优解不动，其余的解向最优解靠近，但是这种算法的全局搜索能力不如PSO。更新公式为theta[i+1]=p*theta[i]+(1-p)*theta_g[i]
+它的思想与PSO算法类似，只是我们的迭代公式不同。保证最优解不动，其余的解向最优解靠近，但是这种算法的全局搜索能力不如PSO。更新公式为
 <img src="https://latex.codecogs.com/gif.latex?theta_i=p*theta_i&plus;(1-p)*theta\_g_i" title="theta_i=p*theta_i+(1-p)*theta\_g_i" />
-其中p是概率可以按照p = p_min + (p_max - p_min) * np.log10(k + 1) / np.log10(times)更新。使得最开始向最优解前进快，逐渐变慢，避免漏掉最优解。选取log10函数是为了步长小的时候迭代次数更多。这一种方法类似捕鱼收网，后面我叫这种方法为捕鱼算法。
+其中p是概率可以按照
+<img src="https://latex.codecogs.com/gif.latex?p=p_{min}&plus;(p_{max}-p_{min})*\frac{\log_{10}{k&plus;1}}{\log_{10}{times}}" title="p=p_{min}+(p_{max}-p_{min})*\frac{\log_{10}{k+1}}{\log_{10}{times}}" />
+更新。使得最开始向最优解前进快，逐渐变慢，避免漏掉最优解。选取log10函数是为了步长小的时候迭代次数更多。这一种方法类似捕鱼收网，后面我叫这种方法为捕鱼算法。
 
 # 模拟退火算法
-模拟退火算法是从一个较高的温度出发，温度逐渐降低，降低按照公式T_max=0.95*T_max。在每一个温度迭代L次，在每一次执行如下过程。给定参数以随机的扰动，如果当前结果更好，则接受，如果当前结果相比上一次不是很好，那么以概率p=exp[-(ValueLast-ValueNow)/T_max)接受结果（ rand()<p ） 。https://www.luogu.org/blog/m-sea/qian-tan-SA 有张图很好的说明了模拟退火的过程，表现了模拟退火具有跳出局部最优解的能力。
+模拟退火算法是从一个较高的温度出发，温度逐渐降低，降低按照公式T_max=0.95*T_max。在每一个温度迭代L次，在每一次执行如下过程。给定参数以随机的扰动，如果当前结果更好，则接受，如果当前结果相比上一次不是很好，那么以概率<img src="https://latex.codecogs.com/gif.latex?p=e^{-\frac{valueLast-valueNow}{T_{max}}}" title="p=e^{-\frac{valueLast-valueNow}{T_{max}}}" />
+接受结果（ rand()<p ） 。https://www.luogu.org/blog/m-sea/qian-tan-SA 有张图很好的说明了模拟退火的过程，表现了模拟退火具有跳出局部最优解的能力。
 
 
 
